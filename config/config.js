@@ -8,7 +8,7 @@ var config = {
     app: {
       name: 'backstatemanager'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3008,
     db: 'mongodb://localhost/backstatemanager-development'
   },
 
@@ -17,7 +17,7 @@ var config = {
     app: {
       name: 'backstatemanager'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3008,
     db: 'mongodb://localhost/backstatemanager-test'
   },
 
@@ -26,7 +26,7 @@ var config = {
     app: {
       name: 'backstatemanager'
     },
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3008,
     db: 'mongodb://localhost/backstatemanager-production'
   }
 };
