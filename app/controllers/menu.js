@@ -1,11 +1,30 @@
 var express = require('express'),
-  router = express.Router(),
-  mongoose = require('mongoose'),
-  Article = mongoose.model('Article');
+	router = express.Router(),
+	mongoose = require('mongoose'),
+	Article = mongoose.model('Article'),
+	Button  = mongoose.model('Button');
 var JSSDK = require('../../libs/jssdk.js');
 var request = require('request');
 var jssdk = new JSSDK('wx0d3fe90f46946b2b','8d8cd2ec36fa750cfdf7566e850ba03c');
 
+var button = new Button({
+	appId:jssdk.appId,
+	name:"百度",
+	url:"",
+	key:"",
+	media_id:"",
+	sub_button:1,
+	type:""
+});
+
+/*
+button.save((err)=>{
+	if(err){
+		console.log(err);
+	}else{
+		console.log("success");
+	}
+})*/
 
 const menuItems = {
 	"button":[
@@ -18,6 +37,21 @@ const menuItems = {
 			"type":"view",
 			"name":"随机问答",
 			"url":"http://demo.open.weixin.qq.com/jssdk"
+		},
+		{
+			"name":"扫码子菜单",
+			"sub_button":[
+				{
+					"type":"scancode_push",
+					"name":"扫码推事件",
+					"key":"scanPush"
+				},
+				{
+					"type":"scancode_waitmsg",
+					"name":"扫码带提示",
+					"key":"scanMsg"
+				}
+			]
 		}
 	]
 };
@@ -45,9 +79,46 @@ router.get('/test/:number', function (req, res, next) {
 	var menu;
 	if(number == 1){
 		menu = menuItems;
+		createMenu(req,res,menu);
 	}else if(number == 2){
 		menu = menuItems2;
+		createMenu(req,res,menu);
+	}else if(number == 3){
+		Button.find({appId:jssdk.appId}).exec(function(err,buttons){
+			if(err){
+				console.log(err);
+			}else{
+				menu={
+					"button":[
+					]
+				}
+				for(index in buttons){
+					let button={
+						"name":buttons[index].name,
+						"type":buttons[index].type,
+						"key":buttons[index].key,
+						"url":buttons[index].url,
+						"media_id":buttons[index].media_id,
+						"sub_button":[]
+					};
+					if(buttons[index].sub_button == 1){
+						var sub={
+							"type":"view",
+							"name":"baidu",
+							"url":"http://www.baidu.com"
+						}
+						button.sub_button.push(sub);
+					}
+					menu.button.push(button);
+				}
+				createMenu(req,res,menu);
+			}
+		});
 	}
+});
+
+function createMenu(req,res,menu){
+	console.log('menu=====>'+JSON.stringify(menu));
 	jssdk.getAccessToken(function(err,token){
 		if(err){
 			console.log(err);
@@ -71,4 +142,4 @@ router.get('/test/:number', function (req, res, next) {
 			});
 		});
 	});
-});
+}
