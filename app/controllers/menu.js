@@ -11,21 +11,21 @@ var jssdk = new JSSDK('wx0d3fe90f46946b2b','8d8cd2ec36fa750cfdf7566e850ba03c');
 var button = new SubButton({
 	appId:jssdk.appId,
 	parentName:"百度",
-	name:"百度",
-	url:"http://www.baidu.com",
+	name:"淘宝",
+	url:"http://www.taobao.com",
 	key:"",
 	media_id:"",
 	type:"view"
 });
 
-/*
+
 button.save((err)=>{
 	if(err){
 		console.log(err);
 	}else{
 		console.log("success");
 	}
-})*/
+})
 
 const menuItems = {
 	"button":[
