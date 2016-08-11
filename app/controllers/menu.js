@@ -18,7 +18,7 @@ var button = new SubButton({
 	type:"view"
 });
 
-
+/*
 button.save((err)=>{
 	if(err){
 		console.log(err);
@@ -26,7 +26,7 @@ button.save((err)=>{
 		console.log("success");
 	}
 })
-
+*/
 const menuItems = {
 	"button":[
 		{
