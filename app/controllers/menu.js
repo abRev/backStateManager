@@ -61,8 +61,19 @@ router.get('/menu/insert/:num',function(req,res,next){
 });
 
 router.post('/menu/insert/1',function(req,res,next){
-	console.log(req.body.name);
-	res.send('OK');
+	var button=new Button({
+		appId:'wx0d3fe90f46946b2b',
+		name:req.body.name,
+		type:req.body.type,
+		key:req.body.key,
+		url:req.body.url,
+		media_id:req.body.media_id,
+		sub_button:req.body.sub_button
+	});
+	button.save((err)=>{
+		if(err) return next(err);
+		res.redirect('back');
+	})
 })
 
 router.get('/menu/:number', function (req, res, next) {
