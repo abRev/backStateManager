@@ -8,25 +8,6 @@ var JSSDK = require('../../libs/jssdk.js');
 var request = require('request');
 var jssdk = new JSSDK('wx0d3fe90f46946b2b','8d8cd2ec36fa750cfdf7566e850ba03c');
 
-var button = new SubButton({
-	appId:jssdk.appId,
-	parentName:"百度",
-	name:"淘宝",
-	url:"http://www.taobao.com",
-	key:"",
-	media_id:"",
-	type:"view"
-});
-
-/*
-button.save((err)=>{
-	if(err){
-		console.log(err);
-	}else{
-		console.log("success");
-	}
-})
-*/
 const menuItems = {
 	"button":[
 		{
@@ -56,35 +37,41 @@ const menuItems = {
 		}
 	]
 };
-const menuItems2 = {
-	"button":[
-		{
-			"type":"click",
-			"name":"问答历史",
-			"key":"conversation-history"
-		},
-		{
-			"type":"view",
-			"name":"随机问答",
-			"url":"http://www.fullab.top/wechat/random"
-		}
-	]
-};
 
 module.exports = function (app) {
   app.use('/wechat-back', router);
 };
 
-router.get('/test/:number', function (req, res, next) {
+router.get('/menu/index',function(req,res,next){
+	res.render('menu/index',{
+			title:"主页"
+	});
+});
+
+router.get('/menu/insert/:num',function(req,res,next){
+	if(req.params.num==1){
+		res.render('menu/insertFirst',{
+			title:'增加一级菜单'
+		});
+	}else{
+		res.render('menu/insertSecond',{
+			title:'增加二级菜单'
+		});
+	}
+});
+
+router.post('/menu/insert/1',function(req,res,next){
+	console.log(req.body.name);
+	res.send('OK');
+})
+
+router.get('/menu/:number', function (req, res, next) {
 	var number = req.params.number;
 	var menu;
 	if(number == 1){
 		menu = menuItems;
 		createMenu(req,res,menu);
 	}else if(number == 2){
-		menu = menuItems2;
-		createMenu(req,res,menu);
-	}else if(number == 3){
 		Button.find({appId:jssdk.appId}).exec(function(err,buttons){
 			if(err){
 				return next(err);
