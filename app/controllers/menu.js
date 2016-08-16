@@ -121,7 +121,7 @@ router.get('/menu/:number', function (req, res, next) {
 							}
 							menu.button.push(button);
 						}
-						createMenu(req,res,menu);
+						createMenu(req,res,menu,next);
 					}
 				});
 			}
@@ -129,13 +129,14 @@ router.get('/menu/:number', function (req, res, next) {
 	}
 });
 
-function createMenu(req,res,menu){
+function createMenu(req,res,menu,next){
 	console.log('menu=====>'+JSON.stringify(menu));
 	jssdk.getAccessToken(function(err,token){
 		if(err){
 			console.log(err);
 		}
-		request.get('https://api.weixin.qq.com/cgi-bin/menu/delete?access_token='+token,function(errGet,resGet,body){
+		request.get('https://api.weixin.qq.com/cgi-bin/menu/delete?access_token='+token
+		,function(errGet,resGet,body){
 			if(errGet){
 				console.log(errGet);
 				return next(errGet);
@@ -149,7 +150,11 @@ function createMenu(req,res,menu){
 					console.log(errPost);
 					return next(errPost);
 				}else{
-					res.end('OK');
+					if(resPost.body.errcode == 0){
+						res.send('OK');
+					}else{
+						res.send(resPost.body);
+					}
 				}
 			});
 		});
