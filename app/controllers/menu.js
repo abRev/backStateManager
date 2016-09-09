@@ -50,8 +50,15 @@ router.get('/menu/index',function(req,res,next){
 
 router.get('/menu/insert/:num',function(req,res,next){
 	if(req.params.num==1){
-		res.render('menu/insertFirst',{
-			title:'增加一级菜单'
+		Button.find({appId:jssdk.appId}).exec((err,buttons)=>{
+			if(err) return next(err);
+			if(buttons.length>=3){
+				res.send('一级菜单已经达到最大值！！');
+			}else{	
+				res.render('menu/insertFirst',{
+					title:'增加一级菜单'
+				});
+			}
 		});
 	}else{
 		Button.find({appId:jssdk.appId}).exec((err,buttons)=>{
@@ -61,20 +68,33 @@ router.get('/menu/insert/:num',function(req,res,next){
 			if(buttons.length<0){
 				res.send('没有一级菜单可用！');
 			}else{
-				var parentNames=[];
-				for(var button in buttons){
-					if(buttons[button].sub_button==1){
-						parentNames.push(buttons[button].name);
+				SubButton.find({appId:jssdk.appId}).exec((err,subButtons)=>{
+					if(err) return next(err);
+
+					var parentNames=[];
+					for(var button in buttons){
+						if(buttons[button].sub_button==1){
+							let count=0;
+							for(var subIndex in subButtons){
+								if(subButtons[subIndex].parentName === buttons[button].name){
+									count++;
+								}
+							}
+							if(count<7){
+								console.log(buttons[button].name+' : '+count);
+								parentNames.push(buttons[button].name);
+							}
+						}
 					}
-				}
-				if(parentNames.length == 0){
-					res.send('没有支持二级菜单的一级菜单');
-				}else{		
-					res.render('menu/insertSecond',{
-						title:'增加二级菜单',
-						parentNames:parentNames
-					});
-				}	
+					if(parentNames.length == 0){
+						res.send('没有支持二级菜单的一级菜单或所有二级菜单已满');
+					}else{		
+						res.render('menu/insertSecond',{
+							title:'增加二级菜单',
+							parentNames:parentNames
+						});
+					}	
+				})
 			}
 		})
 	}
