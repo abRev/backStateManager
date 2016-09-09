@@ -14,26 +14,24 @@ function JSSDK(appId,appSecret){
 
 JSSDK.prototype={
 	getSignPackage:function(url){
-		var jsapiTicket ;
-		this.getJsApiTicket(function(err,ticket){
-				jsapiIicket = ticket
-		});
-		var timestamp = Math.round(Date.now()/1000);
-		var nonceStr = this.createNonceStr();
+		this.getJsApiTicket(function(err,jsapiTicket){
+			var timestamp = Math.round(Date.now()/1000);
+			var nonceStr = this.createNonceStr();
 		
 	
-		var rowString = "jsapi_ticket="+jsapiTicket+"&noncestr="+nonceStr+"&timestamp="+timestamp+"&url="+url;
-		var hash = crypto.createHash('sha1');
-		var	sign = hash.update(rowString).digest('hex');
+			var rowString = "jsapi_ticket="+jsapiTicket+"&noncestr="+nonceStr+"&timestamp="+timestamp+"&url="+url;
+			var hash = crypto.createHash('sha1');
+			var	sign = hash.update(rowString).digest('hex');
 
-		return {
-			appId:this.appId,
-			nonceStr:nonceStr,
-			timestamp:timestamp,
-			url:url,
-			signature:sign,
-			rowString:rowString
-		};
+			return {
+				appId:this.appId,
+				nonceStr:nonceStr,
+				timestamp:timestamp,
+				url:url,
+				signature:sign,
+				rowString:rowString
+			};
+		});
 	},
 	getJsApiTicket:function(done){
 		var instance = this;

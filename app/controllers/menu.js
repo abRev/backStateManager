@@ -54,11 +54,47 @@ router.get('/menu/insert/:num',function(req,res,next){
 			title:'增加一级菜单'
 		});
 	}else{
-		res.render('menu/insertSecond',{
-			title:'增加二级菜单'
-		});
+		Button.find({appId:jssdk.appId}).exec((err,buttons)=>{
+			if(err){
+				return next(err);
+			}
+			if(buttons.length<0){
+				res.send('没有一级菜单可用！');
+			}else{
+				var parentNames=[];
+				for(var button in buttons){
+					if(buttons[button].sub_button==1){
+						parentNames.push(buttons[button].name);
+					}
+				}
+				if(parentNames.length == 0){
+					res.send('没有支持二级菜单的一级菜单');
+				}else{		
+					res.render('menu/insertSecond',{
+						title:'增加二级菜单',
+						parentNames:parentNames
+					});
+				}	
+			}
+		})
 	}
 });
+
+router.post('/menu/insert/2',(req,res,next)=>{
+	var subButton = new SubButton({
+		appId:jssdk.appId,
+		parentName:req.body.parentName,
+		name:req.body.name,
+		type:req.body.type,
+		key:req.body.key,
+		url:req.body.url,
+		media_id:req.body.mediaId
+	});
+	subButton.save((err)=>{
+		if(err) return next(err);
+		res.send('提交成功');
+	})
+})
 
 router.post('/menu/insert/1',function(req,res,next){
 	var button=new Button({
@@ -72,7 +108,7 @@ router.post('/menu/insert/1',function(req,res,next){
 	});
 	button.save((err)=>{
 		if(err) return next(err);
-		res.redirect('back');
+		res.send('提交成功');
 	})
 })
 
