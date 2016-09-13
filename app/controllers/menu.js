@@ -37,7 +37,7 @@ const menuItems = {
 		}
 	]
 };
-
+//截取这个地址
 module.exports = function (app) {
   app.use('/wechat-back', router);
 };
@@ -47,7 +47,7 @@ router.get('/menu/index',function(req,res,next){
 			title:"主页"
 	});
 });
-
+//插入菜单
 router.get('/menu/insert/:num',function(req,res,next){
 	if(req.params.num==1){
 		Button.find({appId:jssdk.appId}).exec((err,buttons)=>{
@@ -99,7 +99,76 @@ router.get('/menu/insert/:num',function(req,res,next){
 		})
 	}
 });
+//获取修改一级菜单界面
+router.get('/menu/edit',(req,res,next)=>{
+	Button.find({appId:jssdk.appId}).exec((err,buttons)=>{
+		if(err) return next(err);
+		res.render('menu/edit/editOne',{
+			title:'修改菜单',
+			buttons:buttons
+		})
+	})
+});
 
+//获取一级菜单与对应的二级菜单页面并可以修改次一级菜单
+router.get('/menu/editOne/:_id',(req,res,next)=>{
+	const Id = req.params._id;
+	Button.findOne({appId:jssdk.appId,_id:Id}).exec((err,button)=>{
+		if(err) return next(err);
+		SubButton.find({appId:jssdk.appId,parentName:button.name}).exec((err,subButtons)=>{
+			if(err) return next(err);
+			res.render('menu/edit/editOneMore',{
+				title:'查看一级菜单。。。',
+				button:button,
+				subButtons:subButtons
+			})
+		})
+	})
+});
+
+//查看二级菜单
+router.get('/menu/editTwo/:_id',function(req,res,next){
+	const Id = req.params._id;
+	SubButton.findOne({_id:Id}).exec(function(err,subButton){
+		if(err) return next(err);
+		res.render('menu/edit/editTwo',{
+			title:'修改二级菜单',
+			subButton:subButton
+		})
+	})
+});
+
+//删除一级菜单
+router.get('/menu/delOne/:_id',(req,res,next)=>{
+	const Id = req.params._id;
+	Button.findOne({_id:Id}).exec((err,button)=>{
+		if(err) return next(err);
+		
+		SubButton.find({appId:jssdk.appId,parentName:button.name}).exec((err,subButtons)=>{
+			if(err) return next(err);
+			console.log(subButtons.length+'  '+button.name);
+			if(subButtons.length>0){		
+				res.error('此一级菜单有二级菜单！ 请删除二级菜单后再做处理');
+				res.redirect('back');
+			}else{
+				Button.remove({_id:Id}).exec((err)=>{
+					if(err) return next(err);
+					res.message('删除成功');
+					res.redirect('back');
+				})
+			}
+		});
+	})
+});
+
+//删除二级菜单
+router.get('/menu/delTwo/:_id',(req,res,next)=>{
+	const Id = req.params._id;
+	res.message('删除成功');
+	res.redirect('back');
+})
+
+//增加二级菜单
 router.post('/menu/insert/2',(req,res,next)=>{
 	var subButton = new SubButton({
 		appId:jssdk.appId,
@@ -115,23 +184,42 @@ router.post('/menu/insert/2',(req,res,next)=>{
 		res.send('提交成功');
 	})
 })
-
+//增加一级菜单
 router.post('/menu/insert/1',function(req,res,next){
-	var button=new Button({
-		appId:'wx0d3fe90f46946b2b',
-		name:req.body.name,
-		type:req.body.type,
-		key:req.body.key,
-		url:req.body.url,
-		media_id:req.body.media_id,
-		sub_button:req.body.sub_button
-	});
-	button.save((err)=>{
+	Button.findOne({_id:req.body._id}).exec((err,button)=>{
 		if(err) return next(err);
-		res.send('提交成功');
+		if(button){
+			Button.update({_id:req.body._id},{$set:
+				{
+					name:req.body.name,
+					type:req.body.type,
+					key:req.body.key,
+					url:req.body.url,
+					media_id:req.body.media_id,
+					sub_button:req.body.sub_button
+				}
+			},(_err)=>{
+				if(_err) return next(_err);
+				res.send('修改成功');
+			})
+		}else{
+			var button=new Button({
+				appId:'wx0d3fe90f46946b2b',
+				name:req.body.name,
+				type:req.body.type,
+				key:req.body.key,
+				url:req.body.url,
+				media_id:req.body.media_id,
+				sub_button:req.body.sub_button
+			});
+			button.save((err)=>{
+				if(err) return next(err);
+				res.send('提交成功');
+			});
+		}
 	})
 })
-
+//应用从数据库中获取的菜单
 router.get('/menu/:number', function (req, res, next) {
 	var number = req.params.number;
 	var menu;
@@ -184,7 +272,7 @@ router.get('/menu/:number', function (req, res, next) {
 		});
 	}
 });
-
+//调用微信公众号接口创建菜单
 function createMenu(req,res,menu,next){
 	console.log('menu=====>'+JSON.stringify(menu));
 	jssdk.getAccessToken(function(err,token){

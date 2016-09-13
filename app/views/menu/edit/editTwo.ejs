@@ -1,26 +1,23 @@
 <!doctype html>
 <html>
 <head>
-<title><%=title%></title>
-	<script defer src='/js/insertSecond.js'></script>
+	<title><%= title %></title>
 </head>
 <body>
-	<% include ../messages %>
+	<h1><%= title %></h1>
+	<% include ../../messages %>
 	<form method='post'>
 		<p>
 			<label for='parentName'>
 				ParentName:
-				<select name='parentName'> 
-				<% if(parentNames.length > 0){ for(var names in parentNames){ %>
-					<option value='<%=parentNames[names]%>'><%=parentNames[names]%></option>
-				<%}}%>
+					<input readonly name='parentName' value='<%=subButton.parentName%>'>
 				</select>
 			</label>
 		</p>
 		<p>
 			<label for='name'>
 				Name:
-				<input type='text' id='name' name='name'/>
+				<input type='text' id='name' name='name' value='<%= subButton.name%>'/>
 			</label>
 		</p>
 		<p>
@@ -43,19 +40,19 @@
 		<p>
 			<label for='key'>
 				Key:
-				<input type='text' id='key' name='key'/>
+				<input type='text' id='key' name='key' value='<%=subButton.key%>'/>
 			</label>
 		</p>
 		<p>
 			<label for='url'>
 				Url:
-				<input type='text' id='url' name='url'/>
+				<input type='text' id='url' name='url' value=<%=subButton.url%>/>
 			</label>
 		</p>
 		<p>
 			<label for='mediaId'>
 				Media_id:
-				<input type='text' id='mediaId' name='mediaId'/>
+				<input type='text' id='mediaId' name='mediaId' value=<%=subButton.media_id%>>
 			</label>
 		</p>
 		<p>

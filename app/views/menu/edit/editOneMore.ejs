@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+	<head>
+		<title><%= title %></title>
+	</head>
+	<body>
+		<h1><%= title %></h1>
+		<% include ../../messages %>
+		<form action='http://www.fullab.top/wechat-back/menu/insert/1'  method='post'>
+			<p>
+				<label for='_id'>
+					ID:
+					<input type='text' readonly name='_id' value=<%= button._id%>>
+				</label>
+			</p>
+			<p>
+				<label for='name'>
+					Name:
+					<input type='text' name='name' value=<%= button.name%>>
+				</label>
+			</p>
+			<p>
+				<label for='name'>
+					Type:
+					<select name='type'>
+						<option value='click'>点击推事件</option>
+						<option value='view'>跳转URL</option>
+						<option value='scancode_push'>扫码推事件</option>
+						<option value='scancode_waitmsg'>扫码推事件且弹出“消息接收
+					    <option value='pic_sysphoto'>弹出系统拍照发图</option>
+						<option value='pic_photo_or_album'>弹出拍照或者相册发图</option>
+						<option value='pic_weixin'>弹出微信相册发图器</option>
+						<option value='location_select'>弹出地理位置选择器</option>
+						<option value='media_id'>下发消息（除文本消息）</option>
+						<option value='view_limited'>跳转图文消息URL</option>
+					</select>
+				</label>
+			</p>
+			<p>
+				<label for='key'>
+					Key:
+					<input type='text' name='key' value=<%= button.key%>>
+				</label>
+			</p>
+			<p>
+				<label for='media_id'>
+					Media_id:
+					<input type='text' name='media_id' value=<%= button.media_id%>>
+				</label>
+			</p>
+			<p>
+				<label for='url'>
+					Url:
+					<input type='text' name='url' value=<%= button.url%>>
+				</label>
+			</p>
+			<p>
+				<label for='sub_button'>
+					是否有二级菜单:
+					<select name='sub_button'>
+							<option value='0'>否</option>
+							<option value='1'>是</option>
+					</select>
+				</label>
+			</p>
+			<p>
+				<input type='submit' value='提交'/>
+			</p>
+		</form>
+		</hr>
+		<% if(subButtons.length>0){%>
+			<h1>二级菜单</h1>
+			<table border='1'>
+				<tr>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Key</th>
+					<th>Url</th>
+					<th>MediaId</th>
+					<th>操作</th>
+				</tr>
+				<% for(var subIndex in subButtons ){%>
+					<tr>
+						<td><%= subButtons[subIndex].name%></td>
+						<td><%= subButtons[subIndex].type%></td>
+						<td><%= subButtons[subIndex].key%></td>
+						<td><%= subButtons[subIndex].url%></td>
+						<td><%= subButtons[subIndex].media_id%></td>
+						<td>
+							<a href='http://www.fullab.top/wechat-back/menu/editTwo/<%=subButtons[subIndex]._id%>'>查看</a>
+							<a href='http://www.fullab.top/wechat-back/menu/delTwo/<%= subButtons[subIndex]._id%>'>删除</a>
+						</td>
+					</tr>
+				<%}%>
+			</table>
+		<%}%>
+	</body>
+</html>

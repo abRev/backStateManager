@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+	<head>
+		<title><%=title %></title>
+	</head>
+	<body>
+		<h1><%=title %></h1>
+		<% include ../../messages %>
+		<table border='1'>
+			<tr>
+				<th>Name</th>
+				<th>Edit</th>
+			</tr>
+			<% for(var btnIndex in buttons){ %>
+				<tr>
+					<td><%= buttons[btnIndex].name %></td>
+					<td>
+						<a href='http://www.fullab.top/wechat-back/menu/editOne/<%= buttons[btnIndex]._id %>'>查看</a>
+						<a href='http://www.fullab.top/wechat-back/menu/delOne/<%= buttons[btnIndex]._id %>'>删除</a>
+					</td>
+				</tr>
+			<%}%>
+		</table>
+	</body>
+</html>
