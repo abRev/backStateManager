@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 var session = require('express-session');
-
+var user = require('../libs/user.js');
 var messages = require('../libs/messages');
 
 
@@ -31,6 +31,7 @@ module.exports = function(app, config) {
   app.use(express.static(config.root + '/public'));
   app.use(methodOverride());
   app.use(session());
+  app.use(user);
   app.use(messages);
 
   var controllers = glob.sync(config.root + '/app/controllers/*.js');

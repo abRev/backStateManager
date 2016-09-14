@@ -39,16 +39,16 @@ const menuItems = {
 };
 //截取这个地址
 module.exports = function (app) {
-  app.use('/wechat-back', router);
+  app.use('/wechat-back/menu/', router);
 };
 
-router.get('/menu/index',function(req,res,next){
+router.get('/index',function(req,res,next){
 	res.render('menu/index',{
 			title:"主页"
 	});
 });
 //插入菜单
-router.get('/menu/insert/:num',function(req,res,next){
+router.get('/insert/:num',function(req,res,next){
 	if(req.params.num==1){
 		Button.find({appId:jssdk.appId}).exec((err,buttons)=>{
 			if(err) return next(err);
@@ -100,7 +100,7 @@ router.get('/menu/insert/:num',function(req,res,next){
 	}
 });
 //获取修改一级菜单界面
-router.get('/menu/edit',(req,res,next)=>{
+router.get('/edit',(req,res,next)=>{
 	Button.find({appId:jssdk.appId}).exec((err,buttons)=>{
 		if(err) return next(err);
 		res.render('menu/edit/editOne',{
@@ -111,7 +111,7 @@ router.get('/menu/edit',(req,res,next)=>{
 });
 
 //获取一级菜单与对应的二级菜单页面并可以修改次一级菜单
-router.get('/menu/editOne/:_id',(req,res,next)=>{
+router.get('/editOne/:_id',(req,res,next)=>{
 	const Id = req.params._id;
 	Button.findOne({appId:jssdk.appId,_id:Id}).exec((err,button)=>{
 		if(err) return next(err);
@@ -127,7 +127,7 @@ router.get('/menu/editOne/:_id',(req,res,next)=>{
 });
 
 //查看二级菜单
-router.get('/menu/editTwo/:_id',function(req,res,next){
+router.get('/editTwo/:_id',function(req,res,next){
 	const Id = req.params._id;
 	SubButton.findOne({_id:Id}).exec(function(err,subButton){
 		if(err) return next(err);
@@ -139,7 +139,7 @@ router.get('/menu/editTwo/:_id',function(req,res,next){
 });
 
 //删除一级菜单
-router.get('/menu/delOne/:_id',(req,res,next)=>{
+router.get('/delOne/:_id',(req,res,next)=>{
 	const Id = req.params._id;
 	Button.findOne({_id:Id}).exec((err,button)=>{
 		if(err) return next(err);
@@ -162,14 +162,22 @@ router.get('/menu/delOne/:_id',(req,res,next)=>{
 });
 
 //删除二级菜单
-router.get('/menu/delTwo/:_id',(req,res,next)=>{
+router.get('/delTwo/:_id',(req,res,next)=>{
 	const Id = req.params._id;
-	res.message('删除成功');
-	res.redirect('back');
-})
+	SubButton.findOne({_id:Id}).exec((err,subBtn)=>{
+		if(err) return next(err);
+		if(subBtn){
+			SubButton.remove({_id:Id}).exec((_err)=>{
+				if(err) return next(_err);
+				res.message('删除成功');
+				res.redirect('back');
+			})
+		}
+	});
+});
 
 //增加二级菜单
-router.post('/menu/insert/2',(req,res,next)=>{
+router.post('/insert/2',(req,res,next)=>{
 	var subButton = new SubButton({
 		appId:jssdk.appId,
 		parentName:req.body.parentName,
@@ -185,7 +193,7 @@ router.post('/menu/insert/2',(req,res,next)=>{
 	})
 })
 //增加一级菜单
-router.post('/menu/insert/1',function(req,res,next){
+router.post('/insert/1',function(req,res,next){
 	Button.findOne({_id:req.body._id}).exec((err,button)=>{
 		if(err) return next(err);
 		if(button){
@@ -220,7 +228,7 @@ router.post('/menu/insert/1',function(req,res,next){
 	})
 })
 //应用从数据库中获取的菜单
-router.get('/menu/:number', function (req, res, next) {
+router.get('/:number', function (req, res, next) {
 	var number = req.params.number;
 	var menu;
 	if(number == 1){
