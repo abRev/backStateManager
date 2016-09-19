@@ -1,0 +1,12 @@
+<% if(locals.user){%>
+	<div id='menu'>
+		<span class='name'><%= locals.user.name %></span>
+		<a class='logout' href='http://www.fullab.top/wechat-back/login/logout'>退出</a>
+	</div>
+<%}else{%>
+	<div id='menu'>
+		<span class='name'>No Login</span>
+		<a class='register' href='http://www.fullab.top/wechat-back/login/register'>注册</a>
+		<a class='login' href='http://www.fullab.top/wechat-back/login'>登陆</a>
+	</div>
+<%}%>

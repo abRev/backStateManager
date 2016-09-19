@@ -4,6 +4,7 @@ var express = require('express'),
 	Article = mongoose.model('Article'),
 	Button  = mongoose.model('Button'),
 	SubButton = mongoose.model('SubButton');
+var	Interupt = require('../../libs/interupt.js');
 var JSSDK = require('../../libs/jssdk.js');
 var request = require('request');
 var jssdk = new JSSDK('wx0d3fe90f46946b2b','8d8cd2ec36fa750cfdf7566e850ba03c');
@@ -39,10 +40,10 @@ const menuItems = {
 };
 //截取这个地址
 module.exports = function (app) {
-  app.use('/wechat-back/menu/', router);
+  app.use('/wechat-back/menu/',Interupt, router);
 };
 
-router.get('/index',function(req,res,next){
+router.get('/',function(req,res,next){
 	res.render('menu/index',{
 			title:"主页"
 	});

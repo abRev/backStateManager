@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+	<head>
+		<title><%=title%></title>
+		<link rel='stylesheet' href='/css/style.css'>
+	</head>
+	<body>
+		<%include ../menu%>
+		<div id='register'>
+			<h1><%=title%></h1>
+			<%include ../messages%>
+			<form method='post'>
+				<p>
+					<input type='text' name='user[name]' placeholder='Username'>
+				</p>
+				<p>
+					<input type='password' name='user[pass]' placeholder='Password'>
+				</p>
+				<p>
+					<input type='submit' valuse='注册'>
+				</p>
+			</form>
+		</div>
+	</body>
+</html>
