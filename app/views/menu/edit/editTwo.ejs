@@ -6,7 +6,13 @@
 <body>
 	<h1><%= title %></h1>
 	<% include ../../messages %>
-	<form method='post'>
+	<form  action='http://www.fullab.top/wechat-back/menu/insert/2' method='post'>
+		<p>
+			<label for='id'>
+			ID:
+				<input readonly name='_id' value='<%=subButton._id%>'>
+			</label>
+		</p>
 		<p>
 			<label for='parentName'>
 				ParentName:
@@ -23,7 +29,7 @@
 		<p>
 			<label for='type'>
 				Type:
-				<select name='type'>
+				<select id='select' name='type'>
 					<option value='click'>点击推事件</option>
 					<option value='view'>跳转URL</option>
 					<option value='scancode_push'>扫码推事件</option>
@@ -46,7 +52,7 @@
 		<p>
 			<label for='url'>
 				Url:
-				<input type='text' id='url' name='url' value=<%=subButton.url%>/>
+				<input type='text' id='url' name='url' value='<%=subButton.url%>'/>
 			</label>
 		</p>
 		<p>
@@ -59,5 +65,13 @@
 			<input type='submit'/>
 		</p>
 	</form>
+	<script type='text/javascript'>
+		var childs = document.getElementById('select').children;
+		for(var i=0;i<childs.length;i++){
+			if('<%=subButton.type%>' == childs[i].value){
+				childs[i].selected = true;
+			}
+		}
+	</script>
 </body>
 </html>

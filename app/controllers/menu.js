@@ -179,18 +179,37 @@ router.get('/delTwo/:_id',(req,res,next)=>{
 
 //增加二级菜单
 router.post('/insert/2',(req,res,next)=>{
-	var subButton = new SubButton({
-		appId:jssdk.appId,
-		parentName:req.body.parentName,
-		name:req.body.name,
-		type:req.body.type,
-		key:req.body.key,
-		url:req.body.url,
-		media_id:req.body.mediaId
-	});
-	subButton.save((err)=>{
+	SubButton.findOne({_id:req.body._id}).exec((err,subBtn)=>{
 		if(err) return next(err);
-		res.send('提交成功');
+		if(subBtn){
+			SubButton.update({_id:req.body._id},{$set:
+				{
+					name:req.body.name,
+					type:req.body.type,
+					key:req.body.key,
+					parentName:req.body.parentName,
+					url:req.body.url,
+					media_id:req.body.mediaId,
+				}
+			},(_err)=>{
+				if(err) return next(err);
+				res.send('修改成功');
+			})
+		}else{	
+			var subButton = new SubButton({
+				appId:jssdk.appId,
+				parentName:req.body.parentName,
+				name:req.body.name,
+				type:req.body.type,
+				key:req.body.key,
+				url:req.body.url,
+				media_id:req.body.mediaId
+			});
+			subButton.save((err)=>{
+				if(err) return next(err);
+					res.send('提交成功');
+			})
+		}
 	})
 })
 //增加一级菜单
@@ -213,7 +232,7 @@ router.post('/insert/1',function(req,res,next){
 			})
 		}else{
 			var button=new Button({
-				appId:'wx0d3fe90f46946b2b',
+				appId:jssdk.appId,
 				name:req.body.name,
 				type:req.body.type,
 				key:req.body.key,
